@@ -1,0 +1,6 @@
+{
+    "description": "iPhone 16e video capture (1280x720). SfM estimates the camera intrinsics; only the frame count below is read.",
+    "extractor": {
+        "num_images": 300
+    }
+}

@@ -1,0 +1,11 @@
+[submodule "submodules/GR00T-WholeBodyControl"]
+	path = submodules/GR00T-WholeBodyControl
+	url = https://github.com/hojjunekim/GR00T-WholeBodyControl.git
+	branch = sim-handoff
+[submodule "submodules/Psi0"]
+	path = submodules/Psi0
+	url = https://github.com/hojjunekim/Psi0.git
+	branch = legs
+[submodule "submodules/sam-3d-objects"]
+	path = submodules/sam-3d-objects
+	url = https://github.com/facebookresearch/sam-3d-objects.git

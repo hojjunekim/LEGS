@@ -1,0 +1,53 @@
+cff-version: 1.2.0
+message: "If you use this code or build on LEGS, please cite the paper below."
+title: "LEGS: Fine-Tuning Teleop-Free VLAs for Humanoid Loco-manipulation in an Embodied Gaussian Splatting World"
+type: software
+authors:
+  - family-names: Kim
+    given-names: Hojune
+    affiliation: Stanford University
+  - family-names: Chen
+    given-names: Timothy
+    affiliation: Stanford University
+  - family-names: Sun
+    given-names: Jiankai
+    affiliation: Stanford University
+  - family-names: Osterberg
+    given-names: Lars W.
+    affiliation: Stanford University
+  - family-names: Chen
+    given-names: Qianzhong
+    affiliation: Stanford University
+  - family-names: Wang
+    given-names: Ke
+    affiliation: Stanford University
+  - family-names: Schwager
+    given-names: Mac
+    affiliation: Stanford University
+repository-code: "https://github.com/hojjunekim/LEGS"
+url: "https://hojjunekim.github.io/legs/"
+license: Apache-2.0
+identifiers:
+  - type: doi
+    value: 10.48550/arXiv.2606.01458
+    description: "The arXiv preprint of the paper"
+preferred-citation:
+  type: conference-paper
+  title: "LEGS: Fine-Tuning Teleop-Free VLAs for Humanoid Loco-manipulation in an Embodied Gaussian Splatting World"
+  authors:
+    - family-names: Kim
+      given-names: Hojune
+    - family-names: Chen
+      given-names: Timothy
+    - family-names: Sun
+      given-names: Jiankai
+    - family-names: Osterberg
+      given-names: Lars W.
+    - family-names: Chen
+      given-names: Qianzhong
+    - family-names: Wang
+      given-names: Ke
+    - family-names: Schwager
+      given-names: Mac
+  collection-title: "Conference on Robot Learning (CoRL)"
+  year: 2026

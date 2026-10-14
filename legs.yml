@@ -1,0 +1,157 @@
+# legs — the SIMULATOR / offline-renderer env (scripts/main, scripts/data render).
+#
+# The toolchain spans three mutually incompatible stacks that cannot share one
+# env, so it is split across three:
+#   * THIS env (legs)            — simulator: viser 1.0, mujoco, pinocchio 2.7, torch, gsplat (numpy<2)
+#   * gsplat.yml (legs-gsplat)   — scripts/gsplat/video2gsplat.py: nerfstudio 1.1.4 (pins viser 0.2.3),
+#                                  hloc, pycolmap
+#   * submodules/Psi0/.venv-openpi — openpi, openpi-client and lerobot 0.1.0 (a pinned commit),
+#                                  with torch 2.7.1 / datasets 3.6.0 / torchcodec 0.5;
+#                                  scripts/data/wigs2universal.sh runs the dataset export there, NOT in legs.
+# scripts/main/object_gen runs in the sam3d-objects env of that submodule (see its README).
+#
+# After `conda env create -f legs.yml -n legs`, run the post-create steps at the
+# bottom of this file (pyrender, the vendored unitree SDK and, for the pi05 policy
+# backend only, openpi-client).
+name: legs
+channels:
+  - conda-forge
+  - robostack-staging          # ROS2 Humble (rclpy) for host-side ros_bridge.py
+  - nvidia/label/cuda-11.8.0
+  - pytorch
+  - nodefaults
+dependencies:
+  - python=3.10
+  - pip
+  # CUDA 11.8 toolkit: gsplat compiles its CUDA kernels with it the first time it is used
+  - cuda-toolkit=11.8
+  - cudatoolkit=11.8.0
+  - pytorch-cuda=11.8
+  # COLMAP SfM (video2gsplat.py itself runs in the legs-gsplat env, which has its own colmap)
+  - colmap=3.11.1
+  - ceres-solver=2.2.0
+  # Media / IO
+  - ffmpeg=8.0.0
+  - gdown=5.2.0
+  # Numeric / scientific core
+  - numpy=1.26.4
+  - scipy=1.15.2
+  # OpenCV (Python + C++ libs) used everywhere in scripts/
+  - opencv=4.12.0
+  - py-opencv=4.12.0
+  # Qt / OpenGL stack required by viser, pyrender, matplotlib Qt backends
+  - pyside6=6.9.2
+  - libegl=1.7.0
+  - libgl=1.7.0
+  - libglvnd=1.7.0
+  - libglu=9.0.3
+  - freeglut=3.2.2
+  # ROS2 Humble (RoboStack) — host-side rclpy + msgs for scripts/main/utils/ros_bridge.py.
+  # Bundled here because a system ROS 2 install (e.g. Jazzy, py3.12) cannot be imported
+  # from this py3.10 env. `conda activate legs` sets up the ROS env; do NOT source /opt/ros (init.sh).
+  - ros-humble-rclpy
+  - ros-humble-geometry-msgs
+  - ros-humble-std-msgs
+  - ros-humble-std-srvs
+  - pip:
+      # ---- Core ML stack ----
+      - torch==2.10.0
+      - torchvision==0.25.0
+      - triton==3.6.0
+      - xformers==0.0.35
+      - transformers==4.40.0
+      - tokenizers==0.19.1
+      - accelerate==1.13.0
+      - timm==0.6.7
+      - einops==0.8.1
+      - jaxtyping==0.3.3
+      - onnxruntime==1.23.2
+      - safetensors==0.7.0
+      - scikit-learn==1.7.2
+      - scikit-image==0.25.2
+      - pandas==2.3.3
+      - matplotlib==3.10.6
+      - pillow==11.3.0
+      # ---- HuggingFace ecosystem ----
+      - huggingface-hub==0.35.3
+      - hf-transfer==0.1.9
+      - hf-xet==1.2.0
+      - datasets==4.6.1
+      # NOTE: lerobot is intentionally NOT here. The dataset export runs in
+      # submodules/Psi0/.venv-openpi (see wigs2universal.sh) with lerobot 0.1.0 (a pinned commit)
+      # and that env's torch 2.7.1 / datasets 3.6.0 / torchcodec 0.5, which clash with this env's
+      # torch 2.10.0 / datasets 4.6.1 / torchcodec 0.10.0. openpi-client, which the pi05 policy
+      # backend imports, pins numpy<2 like this env; it installs as a post-create step below.
+      # ---- Simulation / robotics ----
+      - mujoco
+      # Pinocchio (imported as `pinocchio`). pin==2.7.0 pulls a consistent numpy<2
+      # cmeel stack (eigenpy 3.5.1, hpp-fcl 2.4.4, cmeel-boost 1.83). Do NOT add
+      # libpinocchio==3.9.0 / coal / libcoal — those are v3 and force boost 1.89 + numpy>=2.
+      - pin==2.7.0
+      - yourdfpy==0.0.58
+      - cyclonedds==0.10.2
+      - pyrealsense2==2.56.5.9235
+      - evdev==1.9.3
+      # ---- Gaussian splatting / rendering / mesh ----
+      - gsplat==1.0.0
+      - viser==1.0.30
+      - pyopengl==3.1.6      # pinned: 3.1.7+ breaks pyrender EGL on NVIDIA+GLVND
+      # pyrender installed --no-deps as a post-create step (see bottom): its setup
+      # hard-pins PyOpenGL==3.1.0 which would clobber pyopengl 3.1.6 above.
+      - freetype-py          # pyrender runtime dep (text)
+      - pyglet<2             # pyrender runtime dep (1.x API; 2.x breaks pyrender 0.1.45)
+      - trimesh==4.8.3
+      - embreex==2.17.7.post6  # trimesh ray-cast backend
+      - manifold3d==3.2.1      # trimesh boolean ops
+      - open3d==0.19.0
+      - plyfile==1.1.3
+      - coacd==1.0.10          # convex decomposition for collision meshes
+      - shapely==2.0.7
+      # NOTE: spz is intentionally absent (1.1.0 is not on PyPI; unused in scripts/).
+      # ---- Not here: nerfstudio, hloc and pycolmap (splat training) are in gsplat.yml;
+      #      scripts/main/object_gen uses the sam3d-objects env ----
+      # ---- IO / media ----
+      - imageio==2.37.0
+      - imageio-ffmpeg==0.6.0
+      - mediapy==1.2.4
+      - av==15.1.0
+      - torchcodec==0.10.0
+      - msgpack==1.1.1
+      - msgpack-numpy==0.4.8
+      - pyarrow==23.0.1
+      - h5py==3.14.0
+      - lz4==4.4.5
+      # ---- Web / serving ----
+      - fastapi==0.133.1
+      - uvicorn==0.41.0
+      - starlette==0.52.1
+      - websockets==15.0.1
+      - websocket-client==1.9.0
+      # ---- Experiment tracking ----
+      - wandb==0.24.2
+      # ---- CLI / config / utils ----
+      - draccus==0.10.0
+      - tyro==0.9.32
+      - rich==14.1.0
+      - pydantic==2.11.10
+      - omegaconf==2.3.0
+      - tqdm==4.67.1
+      - requests==2.32.5
+      - pygame
+      - pyyaml==6.0.3
+      - ruamel-yaml==0.19.1
+      # ---- HF / GCS / S3 uploads ----
+      - boto3
+      - gsutil==5.36
+      - google-auth==2.39.0
+#
+# ---- POST-CREATE STEPS (run once, with the env activated, from the repo root) ----
+#   conda activate legs
+#   # pyrender: --no-deps so its stale PyOpenGL==3.1.0 pin doesn't clobber pyopengl 3.1.6
+#   pip install --no-deps pyrender==0.1.45
+#   # unitree_sdk2py: use the SONIC-patched copy vendored in the GR00T-WBC submodule
+#   # (the PyPI/stock wheels lack the custom unitree_hg OdoState_ message and the
+#   #  stock wheel's __init__ is broken). --no-deps; cyclonedds already installed above.
+#   pip install --no-deps -e ./submodules/GR00T-WholeBodyControl/external_dependencies/unitree_sdk2_python
+#   # openpi-client: only for the pi05 policy backend (simulate_object.py --backend pi05, openloop_eval.py)
+#   pip install -e ./submodules/Psi0/src/openpi/openpi-client

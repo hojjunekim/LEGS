@@ -1,0 +1,4 @@
+{
+  "real_height_m": 0.025,
+  "note": "ccm.json is frozen. It was fit from a near top-down render of the plate; color_refine_ccm.py now renders a side view that sees the plate edge-on, and a refit there gives about diag(2.53, 2.57, 2.46). Bake the stored fit with --apply-ccm ccm.json."
+}

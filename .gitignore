@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+
+# Data and large assets: not stored in git. scripts/download_assets.sh fetches
+# them to these paths (scripts/assets.sha256 lists each file and its group).
+# Tracked here: the flightroom splat's calibration, plus the color chart photos
+# and the object-generation sources (bottom of this file).
+data/*
+!data/gsplat/
+data/gsplat/*
+!data/gsplat/flightroom/
+data/gsplat/flightroom/*
+!data/gsplat/flightroom/default.json
+!data/objects/
+data/objects/*
+
+# Robots: only G1 is tracked; its meshes come with the core assets.
+robots/*
+!robots/g1/
+robots/g1/meshes/
+
+# Submodules: only the repos wired as real git submodules (see .gitmodules) are
+# tracked as gitlinks. All other local clones under submodules/ stay out of the repo.
+submodules/*
+!submodules/GR00T-WholeBodyControl
+!submodules/Psi0
+!submodules/sam-3d-objects
+
+# Collected data / datasets
+scripts/main/collected_data*/
+data/collected/
+scripts/main/*.zip
+
+# Eval results (images/videos)
+scripts/eval/eval_results/
+
+# Gsplat training outputs (large)
+scripts/gsplat/output/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+*.so
+
+# Large data files
+*.csv
+
+# Media / binaries
+*.mp4
+*.avi
+*.png
+*.jpg
+*.jpeg
+
+# Misc
+*.log
+
+# Color calibration chart photos and object-generation sources (small);
+# the source meshes are downloaded by scripts/download_assets.sh sources
+!data/calibration/
+!data/calibration/**
+!data/objects/sources/
+!data/objects/sources/**
+data/objects/sources/*/mesh_raw.glb
