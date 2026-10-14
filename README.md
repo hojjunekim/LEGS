@@ -43,9 +43,11 @@ source ./init.sh
 (cd scripts/main && python scene_config.py orange_to_plate_locomani)   # writes the scene XML the backend loads
 ```
 
-Start the MuJoCo sim loop and the SONIC controller in two more shells and release the elastic band
-([SETUP.md, section 5](SETUP.md#5-run-the-simulator)). Then start the frontend and open
-`http://localhost:8080`:
+Start the MuJoCo sim loop and the SONIC controller in two more shells
+([SETUP.md, section 5](SETUP.md#5-run-the-simulator)). The robot starts out hanging from a virtual
+elastic band. When the controller prints `Planner initialized successfully!`, click the MuJoCo window
+and press `9` to release the band and let the robot stand on the ground (pressing `9` again
+re-attaches it). Then start the frontend and open `http://localhost:8080`:
 
 ```bash
 cd scripts/main && python simulate_object.py --scene orange_to_plate_locomani
