@@ -7,7 +7,7 @@ sRGB space:
 
 M is a least-squares fit on the 24-patch ColorChecker Classic, photographed
 under the same light by the iPhone (source) and by the RealSense D435 color
-camera (target) with AE/AWB off, exposure 100 µs and white balance 3000 K (see
+camera (target) with AE/AWB off, exposure 10 ms and white balance 3000 K (see
 the paper's appendix on color calibration). The fit uses the per-patch medians
 of data/calibration/color_chart/{iphone,realsense}.jpg after sRGB
 linearization. To refit, or to check the matrix below against the photos:

@@ -14,7 +14,7 @@ applied once to every composited frame in `scripts/data/offline_renderer.py`
 | file | camera | size |
 |---|---|---|
 | `iphone.jpg` | iPhone photo | 4032x3024 |
-| `realsense.jpg` | D435 color stream, AE/AWB off, exposure 100 µs, white balance 3000 K | 640x480 |
+| `realsense.jpg` | D435 color stream, AE/AWB off, exposure 10 ms, white balance 3000 K | 640x480 |
 
 Both show the same 24-patch ColorChecker Classic under the same lighting.
 
